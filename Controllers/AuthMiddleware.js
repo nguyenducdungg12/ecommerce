@@ -1,6 +1,5 @@
 require('dotenv').config();
 const jwtHelper = require('../Helper/jwt.helper');
-const refreshToken = require('../Helper/refeshToken.helper')
 const token_secrecSignature = process.env.token_secrecSignature;
 
 let isAuth = async (req,res,next)=>{
@@ -12,9 +11,6 @@ let isAuth = async (req,res,next)=>{
             next();
         }
         catch(err){
-            if(err.name=='TokenExpiredError'){
-
-            }
             return res.json({
                 message: err,
               });
@@ -24,4 +20,13 @@ let isAuth = async (req,res,next)=>{
         res.send('Không hợp lệ');
     }
 }
-module.exports = {isAuth}
+let isAdmin = async (req,res,next)=>{
+    const admin = req.user;
+    if(admin.data.isAdmin){
+        next();
+    }
+    else{
+        res.send('Bạn không có quyền truy cập');
+    }
+}
+module.exports = {isAuth,isAdmin}

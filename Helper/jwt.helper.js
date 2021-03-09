@@ -5,6 +5,7 @@ let generateToken = (user,secretSignature,tokenLife)=>{
         const userData = {
             _id: user._id,
             name: user.userName,
+            isAdmin:user.isAdmin,
         }
           jwt.sign(
             {data: userData},

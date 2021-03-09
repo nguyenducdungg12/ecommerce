@@ -6,6 +6,5 @@ const refreshToken = (refreshToken)=>{
             x_authorization:refreshToken,
         }
     }).post('localhost:5000/api/refreshToken');
-
 }
 module.exports = {refreshToken};

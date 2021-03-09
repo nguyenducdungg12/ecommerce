@@ -26,6 +26,9 @@ const User = new Schema({
     ,
     RefreshToken:{
         type:String,
+    },
+    isAdmin:{
+        type:Boolean,
     }
 })
 module.exports = mongoose.model('User',User);

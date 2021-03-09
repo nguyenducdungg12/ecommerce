@@ -17,6 +17,9 @@ const Cart = new Schema({
       },
       status:{
         type:String,
+      },
+      idProduct:{
+        type:String,
       }
 
 
