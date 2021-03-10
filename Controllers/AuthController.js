@@ -9,39 +9,72 @@ const refreshtoken_Timelife = process.env.refreshtoken_timelife;
 const saltRounds = 10;
 
 const register = async (req, res) => {
-    const userName = req.body.userName.toLowerCase();
-    const User = await UserModel.find({
-        userName: userName,
-    })
-    if (User.length == 0) {
-        const hashPassword = bcrypt.hashSync(req.body.Password, saltRounds);
+    if(req.body.accessToken){
+        var checkUser = await UserModel.find({
+            userName:req.body.name
+        },(err,data)=>{
+
+        });
+        if(checkUser.length>0){
+            return res.json({
+                msg: 'Thành công',
+                  msgID: 2,
+            });
+        }
+        const hashPassword = bcrypt.hashSync('anhyeuem', saltRounds);
         const NewUser = new UserModel({
-            userName: userName,
+            userName: req.body.name,
             Password: hashPassword,
-            Gender: req.body.Gender,
-            Phone: req.body.Phone,
+            Gender: '',
+            Phone: null,
             isAdmin: false,
-            Age: req.body.Age,
-            AvatarPath: req.file.originalname,
+            Age:null,
+            AvatarPath: req.body.picture.data.url,
             RefreshToken: null,
+            isSocialMedia:true,
+            idUserSocialMedia:req.body.userID,
         });
         NewUser.save();
-        if (!NewUser) {
-            res.json({
-                msg: 'Tạo tài khoản thất bại',
-                msgID: 1,
-            })
-        }
         res.json({
-            msg: 'Tạo tài khoản thành công',
+            msg: 'Thành công',
             msgID: 2,
+        })
+    }
+    else{
+        const userName = req.body.userName.toLowerCase();
+        const User = await UserModel.find({
+            userName: userName,
+        })
+        if (User.length == 0) {
+            const hashPassword = bcrypt.hashSync(req.body.Password, saltRounds);
+            const NewUser = new UserModel({
+                userName: userName,
+                Password: hashPassword,
+                Gender: req.body.Gender,
+                Phone: req.body.Phone,
+                isAdmin: false,
+                Age: req.body.Age,
+                AvatarPath: req.file.originalname,
+                RefreshToken: null,
+            });
+            NewUser.save();
+            if (!NewUser) {
+                res.json({
+                    msg: 'Tạo tài khoản thất bại',
+                    msgID: 1,
+                })
+            }
+            res.json({
+                msg: 'Tạo tài khoản thành công',
+                msgID: 2,
+            });
+        }
+        else {
+            res.json({
+                msg: 'Tài khoản đã tồn tại',
+                msgID: 3
         });
     }
-    else {
-        res.json({
-            msg: 'Tài khoản đã tồn tại',
-            msgID: 3
-    });
 } 
 }
 const registerAdmin = async (req, res) => {
@@ -84,11 +117,13 @@ const registerAdmin = async (req, res) => {
 const login = async (req, res) => {
     const userName = req.body.userName;
     const password = req.body.Password;
+    const idUser = req.body.idUserSocialMedia ? req.body.idUserSocialMedia : '';
     const checkUserName = await UserModel.findOne({
         userName: userName,
+        idUserSocialMedia:idUser,
     })
     if (!checkUserName) {
-        res.json({
+       return res.json({
             msg: 'Tài khoản không tồn tại',
             isError: true,
         })

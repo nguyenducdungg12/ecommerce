@@ -29,6 +29,14 @@ const User = new Schema({
     },
     isAdmin:{
         type:Boolean,
+    },
+    isSocialMedia:{
+        type:Boolean,
+        default:false,
+    },
+    idUserSocialMedia:{
+        type:String,
+        default:'',
     }
 })
 module.exports = mongoose.model('User',User);

@@ -73,6 +73,18 @@ router.delete('/user/:id',AuthMiddleware.isAuth,AuthMiddleware.isAdmin,async(req
     })
 })
 router.get('/user',AuthMiddleware.isAuth,async (req,res)=>{
+    if(req.user.is_valid){
+        res.json({
+            userName: req.user.name,
+            Password: hashPassword,
+            Gender: req.body.Gender,
+            Phone: req.body.Phone,
+            isAdmin: true,
+            Age: req.body.Age,
+            AvatarPath: req.file.originalname,
+            RefreshToken: null,
+        })
+    }
     idUser = req.user.data._id;
         User.findOne({_id:idUser},(err,user)=>{
             if(!err){
